@@ -195,13 +195,6 @@ pub fn parse_fanart_movie_id(value: &str) -> Option<String> {
         }
     }
 
-    if let Some(id_str) = lower.strip_prefix("tmdb-movie:") {
-        let id_str = id_str.trim();
-        if !id_str.is_empty() && id_str.chars().all(|c| c.is_ascii_digit()) {
-            return Some(id_str.to_string());
-        }
-    }
-
     if let Some(id_str) = lower.strip_prefix("imdb:") {
         let id_str = id_str.trim();
         if !id_str.is_empty() {
@@ -283,10 +276,7 @@ mod tests {
             parse_fanart_movie_id("TMDB:550"),
             Some("550".to_string())
         );
-        assert_eq!(
-            parse_fanart_movie_id("tmdb-movie:550"),
-            Some("550".to_string())
-        );
+        assert_eq!(parse_fanart_movie_id("tmdb-movie:550"), None);
     }
 
     #[test]
