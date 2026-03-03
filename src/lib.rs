@@ -25,7 +25,7 @@ pub fn infos() -> FnResult<Json<PluginInformation>> {
         capabilities: vec![PluginType::LookupMetadata],
         version: 1,
         interface_version: 1,
-        repo: None,
+        repo: Some("https://github.com/flashthepublic/rs-plugin-fanart".to_string()),
         publisher: "neckaros".into(),
         description: "Look up movie and TV show artwork from FanArt.tv".into(),
         credential_kind: Some(CredentialType::Token),
