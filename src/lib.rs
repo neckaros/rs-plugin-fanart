@@ -23,7 +23,7 @@ pub fn infos() -> FnResult<Json<PluginInformation>> {
     Ok(Json(PluginInformation {
         name: "fanart_images".into(),
         capabilities: vec![PluginType::LookupMetadata],
-        version: 2,
+        version: 3,
         interface_version: 1,
         repo: Some("https://github.com/neckaros/rs-plugin-fanart".to_string()),
         publisher: "neckaros".into(),
@@ -104,10 +104,10 @@ fn resolve_movie_id(movie: &RsLookupMovie) -> Option<String> {
 
     // Check ids.tmdb
     if let Some(ids) = movie.ids.as_ref() {
-        if let Some(tmdb_id) = ids.tmdb {
+        if let Some(tmdb_id) = ids.tmdb() {
             return Some(tmdb_id.to_string());
         }
-        if let Some(ref imdb_id) = ids.imdb {
+        if let Some(imdb_id) = ids.imdb() {
             let trimmed = imdb_id.trim();
             if !trimmed.is_empty() {
                 return Some(trimmed.to_string());
@@ -129,7 +129,7 @@ fn resolve_serie_id(serie: &RsLookupSerie) -> Option<u64> {
 
     // Check ids.tvdb
     if let Some(ids) = serie.ids.as_ref() {
-        if let Some(tvdb_id) = ids.tvdb {
+        if let Some(tvdb_id) = ids.tvdb() {
             return Some(tvdb_id);
         }
     }
@@ -284,10 +284,7 @@ mod tests {
     fn resolve_movie_id_from_ids_tmdb() {
         let movie = RsLookupMovie {
             name: Some("Fight Club".to_string()),
-            ids: Some(RsIds {
-                tmdb: Some(550),
-                ..Default::default()
-            }),
+            ids: Some(RsIds::from_tmdb(550)),
             page_key: None,
         };
         assert_eq!(resolve_movie_id(&movie), Some("550".to_string()));
@@ -297,10 +294,7 @@ mod tests {
     fn resolve_movie_id_from_ids_imdb() {
         let movie = RsLookupMovie {
             name: Some("Fight Club".to_string()),
-            ids: Some(RsIds {
-                imdb: Some("tt0137523".to_string()),
-                ..Default::default()
-            }),
+            ids: Some(RsIds::from_imdb("tt0137523".to_string())),
             page_key: None,
         };
         assert_eq!(resolve_movie_id(&movie), Some("tt0137523".to_string()));
@@ -330,10 +324,7 @@ mod tests {
     fn resolve_serie_id_from_ids_tvdb() {
         let serie = RsLookupSerie {
             name: Some("Breaking Bad".to_string()),
-            ids: Some(RsIds {
-                tvdb: Some(81189),
-                ..Default::default()
-            }),
+            ids: Some(RsIds::from_tvdb(81189)),
             page_key: None,
         };
         assert_eq!(resolve_serie_id(&serie), Some(81189));
