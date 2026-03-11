@@ -6,7 +6,7 @@ use rs_plugin_common_interfaces::{
     lookup::{
         RsLookupMetadataResults, RsLookupMovie, RsLookupQuery, RsLookupSerie, RsLookupWrapper,
     },
-    CredentialType, PluginInformation, PluginType, RsRequest,
+    CredentialType, PluginInformation, PluginType, RsRequest, RsRequestStatus,
 };
 
 mod fanart;
@@ -23,7 +23,7 @@ pub fn infos() -> FnResult<Json<PluginInformation>> {
     Ok(Json(PluginInformation {
         name: "fanart_images".into(),
         capabilities: vec![PluginType::LookupMetadata],
-        version: 3,
+        version: 4,
         interface_version: 1,
         repo: Some("https://github.com/neckaros/rs-plugin-fanart".to_string()),
         publisher: "neckaros".into(),
@@ -142,6 +142,7 @@ fn fanart_entry_to_image(entry: FanartImageEntry) -> ExternalImage {
         kind: Some(entry.image_type),
         url: RsRequest {
             url: entry.url,
+            status: RsRequestStatus::FinalPublic,
             ..Default::default()
         },
         lang: entry.lang,
